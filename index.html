@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CCE Attendance Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+          extend: {
+            colors: {
+              primary: {
+                50: '#f0f7ff',
+                100: '#e0effe',
+                200: '#bae0fd',
+                300: '#7cc8fc',
+                400: '#38adf8',
+                500: '#2563EB', // Standardized Academic Blue
+                600: '#1d4ed8',
+                700: '#1e40af',
+                800: '#1e3a8a',
+                900: '#172554',
+              },
+              slate: {
+                50: '#f8fafc',
+                100: '#f1f5f9',
+                200: '#e2e8f0',
+                300: '#cbd5e1',
+                400: '#94a3b8',
+                500: '#64748b',
+                600: '#475569',
+                700: '#334155',
+                800: '#1e293b', // Primary surface dark
+                900: '#0f172a', // Primary background dark
+                950: '#020617',
+              }
+            },
+          },
+        },
+      }
+    </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+      body {
+        font-family: 'Inter', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+      .signature-font {
+        font-family: 'Brush Script MT', cursive;
+      }
+      /* Smooth theme transitions */
+      html.dark body {
+        background-color: #0F172A;
+        color: #f1f5f9;
+      }
+      .transition-all {
+        transition-property: all;
+        transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+        transition-duration: 200ms;
+      }
+      /* Custom scrollbar for professional look */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #cbd5e1;
+        border-radius: 10px;
+      }
+      .dark ::-webkit-scrollbar-thumb {
+        background: #334155;
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@^19.2.4",
+    "react/": "https://esm.sh/react@^19.2.4/",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.4/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+  <body class="bg-slate-50 text-slate-900 dark:bg-slate-900 dark:text-slate-100 transition-all antialiased">
+    <div id="root"></div>
+    <script type="module" src="/index.tsx"></script>
+  </body>
+</html>
