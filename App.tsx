@@ -789,8 +789,10 @@ const App: React.FC = () => {
                       <table className="w-full text-left text-sm border-collapse">
                         <thead className="bg-slate-100 dark:bg-slate-800 text-slate-500 dark:text-slate-400">
                           <tr>
-                            <th className="px-6 py-3 font-bold uppercase text-[10px] tracking-widest">Reg No.</th>
+                            <th className="px-6 py-3 font-bold uppercase text-[10px] tracking-widest">Enrollment No.</th>
+                            <th className="px-6 py-3 font-bold uppercase text-[10px] tracking-widest">Register No.</th>
                             <th className="px-6 py-3 font-bold uppercase text-[10px] tracking-widest">Name</th>
+                            <th className="px-6 py-3 font-bold uppercase text-[10px] tracking-widest text-center">No. of Days Leave Avail</th>
                             <th className="px-6 py-3 font-bold uppercase text-[10px] tracking-widest">Reason</th>
                             <th className="px-6 py-3 font-bold uppercase text-[10px] tracking-widest text-center">Action</th>
                           </tr>
@@ -798,8 +800,14 @@ const App: React.FC = () => {
                         <tbody className="divide-y divide-slate-200 dark:divide-slate-700">
                           {records.map(r => (
                             <tr key={r.registerNumber}>
+                              <td className="px-6 py-3 font-mono text-slate-600 dark:text-slate-400">{r.enrollNumber}</td>
                               <td className="px-6 py-3 font-mono font-bold text-slate-700 dark:text-slate-300">{r.registerNumber}</td>
                               <td className="px-6 py-3 font-semibold text-slate-900 dark:text-slate-100">{r.studentName}</td>
+                              <td className="px-6 py-3 text-center">
+                                <span className="px-2.5 py-1 bg-primary-50 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-lg font-bold">
+                                  {statsMap[r.registerNumber]?.leaveOpted || 0}
+                                </span>
+                              </td>
                               <td className="px-6 py-3 text-slate-600 dark:text-slate-400">{r.reason}</td>
                               <td className="px-6 py-3 text-center">
                                 {!flowState.hodAuthorized && (
