@@ -52,6 +52,44 @@ npm run dev
 npm run build
 ```
 
+## 🚀 Deployment
+
+### Deploy to Vercel
+
+#### Option 1: Using the deployment script
+```bash
+./deploy.sh
+```
+
+#### Option 2: Manual deployment
+```bash
+# Install Vercel CLI
+npm install -g vercel
+
+# Build the application
+npm run build
+
+# Deploy to Vercel
+vercel --prod
+```
+
+#### Option 3: Deploy via Vercel Dashboard
+1. Push your code to GitHub
+2. Go to [vercel.com](https://vercel.com)
+3. Click "New Project"
+4. Import your GitHub repository
+5. Vercel will automatically detect it's a Vite project and deploy it
+
+## 🌐 Live Application
+
+Your application will be deployed at: `https://your-app-name.vercel.app`
+
+### Available Routes
+- `/` - Home (Attendance Entry)
+- `/attendance` - Attendance Entry
+- `/students` - Student List  
+- `/about` - About page
+
 ## Usage
 
 1. **Attendance Entry**: 

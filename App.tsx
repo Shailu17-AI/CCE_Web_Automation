@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import { COLLEGE_DETAILS } from './constants';
 import { Page, AttendanceRecord, Student } from './types';
 import { storageService } from './services/storageService';
@@ -17,12 +18,21 @@ const Header: React.FC = () => (
   </header>
 );
 
-const Navbar: React.FC<{ currentPage: Page; setPage: (p: Page) => void; isDark: boolean; toggleTheme: () => void }> = ({ currentPage, setPage, isDark, toggleTheme }) => (
+const Navbar: React.FC<{ currentPage: Page; setCurrentPage: (p: Page) => void; isDark: boolean; toggleTheme: () => void }> = ({ currentPage, setCurrentPage, isDark, toggleTheme }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const handleNavigation = (page: Page, path: string) => {
+    setCurrentPage(page);
+    navigate(path);
+  };
+
+  return (
   <nav className="sticky top-0 z-50 bg-white/90 dark:bg-slate-900/90 backdrop-blur-lg border-b border-slate-200 dark:border-slate-800 px-4 transition-all">
     <div className="max-w-7xl mx-auto flex items-center justify-between h-16">
       <div className="flex items-center space-x-1">
         <button
-          onClick={() => setPage(Page.AttendanceEntry)}
+          onClick={() => handleNavigation(Page.AttendanceEntry, '/attendance')}
           className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all ${currentPage === Page.AttendanceEntry
             ? 'bg-primary-500 text-white shadow-md shadow-primary-500/20'
             : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -31,7 +41,7 @@ const Navbar: React.FC<{ currentPage: Page; setPage: (p: Page) => void; isDark: 
           Attendance Entry
         </button>
         <button
-          onClick={() => setPage(Page.StudentList)}
+          onClick={() => handleNavigation(Page.StudentList, '/students')}
           className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all ${currentPage === Page.StudentList
             ? 'bg-primary-500 text-white shadow-md shadow-primary-500/20'
             : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -40,7 +50,7 @@ const Navbar: React.FC<{ currentPage: Page; setPage: (p: Page) => void; isDark: 
           Student List
         </button>
         <button
-          onClick={() => setPage(Page.About)}
+          onClick={() => handleNavigation(Page.About, '/about')}
           className={`px-5 py-2 rounded-xl text-sm font-semibold transition-all ${currentPage === Page.About
             ? 'bg-primary-500 text-white shadow-md shadow-primary-500/20'
             : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800'
@@ -48,7 +58,7 @@ const Navbar: React.FC<{ currentPage: Page; setPage: (p: Page) => void; isDark: 
         >
           About
         </button>
-      </div>
+              </div>
       <button
         onClick={toggleTheme}
         className="p-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 hover:bg-white dark:hover:bg-slate-700 transition-all text-slate-600 dark:text-slate-400"
@@ -62,7 +72,8 @@ const Navbar: React.FC<{ currentPage: Page; setPage: (p: Page) => void; isDark: 
       </button>
     </div>
   </nav>
-);
+  );
+};
 
 interface PasscodeModalProps {
   isOpen: boolean;
@@ -222,14 +233,17 @@ interface AuthFlowState {
   hodTimestamp?: number;
 }
 
-const App: React.FC = () => {
-  const [currentPage, setPage] = useState<Page>(Page.AttendanceEntry);
-  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
-    return localStorage.getItem('theme') !== 'light';
-  });
+interface AppProps {
+  currentPage: Page;
+  setCurrentPage: (page: Page) => void;
+  isDarkMode: boolean;
+  setIsDarkMode: (dark: boolean) => void;
+}
+
+const App: React.FC<AppProps> = ({ currentPage, setCurrentPage, isDarkMode, setIsDarkMode }) => {
 
   const [students, setStudents] = useState<Student[]>([]);
-  const [records, setRecords] = useState<AttendanceRecord[]>([]);
+    const [records, setRecords] = useState<AttendanceRecord[]>([]);
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [statsMap, setStatsMap] = useState<Record<string, { leaveOpted: number; totalWorkingDays: number }>>({});
   const [globalWorkingDays, setGlobalWorkingDays] = useState(100);
@@ -293,6 +307,7 @@ const App: React.FC = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  
   const loadAll = () => {
     const loadedStudents = storageService.getStudents();
     setStudents(loadedStudents);
@@ -627,7 +642,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <Navbar currentPage={currentPage} setPage={setPage} isDark={isDarkMode} toggleTheme={() => setIsDarkMode(!isDarkMode)} />
+      <Navbar currentPage={currentPage} setCurrentPage={setCurrentPage} isDark={isDarkMode} toggleTheme={() => setIsDarkMode(!isDarkMode)} />
       <Header />
 
       <main className="max-w-7xl mx-auto px-4 pb-24">
@@ -1159,6 +1174,12 @@ const App: React.FC = () => {
                         <span className="font-bold text-slate-700 dark:text-slate-300">{adv.name}</span>
                         <div className="flex items-center space-x-2">
                           <span className="text-[10px] bg-green-100 text-green-700 px-2 py-1 rounded font-bold">ACTIVE</span>
+                          <button
+                            onClick={() => handleRemoveAdvisor(adv.id)}
+                            className="text-red-400 opacity-0 group-hover:opacity-100 transition-opacity hover:text-red-600 p-1"
+                          >
+                            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                          </button>
                         </div>
                       </div>
                     ))
@@ -1168,7 +1189,8 @@ const App: React.FC = () => {
             </div>
           </div>
         )}
-      </main>
+
+        </main>
 
       <footer className="fixed bottom-0 w-full bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-t border-slate-100 dark:border-slate-800 py-3 text-center text-[9px] font-black text-slate-400 dark:text-slate-600 uppercase tracking-[0.3em] z-40">
         CCE Attendance & Leave Management System • {new Date().getFullYear()}
@@ -1187,4 +1209,20 @@ const App: React.FC = () => {
   );
 };
 
-export default App;
+const AppWithRoutes: React.FC = () => {
+  const [currentPage, setCurrentPage] = useState<Page>(Page.AttendanceEntry);
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(() => {
+    return localStorage.getItem('theme') !== 'light';
+  });
+
+  return (
+    <Routes>
+      <Route path="/" element={<App currentPage={currentPage} setCurrentPage={setCurrentPage} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />} />
+      <Route path="/attendance" element={<App currentPage={Page.AttendanceEntry} setCurrentPage={setCurrentPage} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />} />
+      <Route path="/students" element={<App currentPage={Page.StudentList} setCurrentPage={setCurrentPage} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />} />
+      <Route path="/about" element={<App currentPage={Page.About} setCurrentPage={setCurrentPage} isDarkMode={isDarkMode} setIsDarkMode={setIsDarkMode} />} />
+    </Routes>
+  );
+};
+
+export default AppWithRoutes;
